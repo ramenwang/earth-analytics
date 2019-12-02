@@ -1,4 +1,4 @@
-# earth-analytics
+# Earth Observatory Analytics
 -- homebuild toolkits for processing remote sensing imagery
 
 ## [MODIS LST - python scripts for downloading, preprocessing, and value extraction](https://github.com/ramenwang/earth-analytics/tree/master/MODIS_LST)
