@@ -23,3 +23,8 @@ The modified version solves the issue where brew installed GDAL does not support
 
 ### Other python library
 glob, requests, gdal (brew install gdal (on mac), which does not include hdf4 driver)
+
+
+## [General tools for image processing](https://github.com/ramenwang/earth-analytics/tree/master/general_tools)
+
+This folder are hand crafted tools for the convinience of processing RS imagery data in python environment. It requires some python packages to be installed: rasterio, gdal, earthpy and matplotlib
