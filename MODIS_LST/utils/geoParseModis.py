@@ -77,6 +77,8 @@ class getModisLST_1km():
         im = plt.imshow(self.mask,
                         extent=[bound['min_lon'],bound['max_lon'],bound['max_lat'],bound['min_lat']])
         ep.colorbar(im)
+        plt.xlabel('Longitude')
+        plt.ylabel('Latitude')
         plt.show()
 
 
@@ -90,6 +92,8 @@ class getModisLST_1km():
                         extent=[bound['min_lon'],bound['max_lon'],bound['max_lat'],bound['min_lat']])
         im_bar = plt.colorbar(im, shrink = 0.25)
         im_bar.set_label('LST (Celsius)')
+        plt.xlabel('Longitude')
+        plt.ylabel('Latitude')
         plt.show()
 
 
@@ -106,10 +110,6 @@ class getModisLST_1km():
         im = plt.imshow(self.toCelsius(self.data),
                         extent=ext)
         im_bar = plt.colorbar(im, shrink = 0.25)
-        # im_bar = ep.colorbar(im)
-        # set up labels
-        plt.xlabel('Columns')
-        plt.ylabel('Rows')
         im_bar.set_label('LST (Celsius)')
 
         # set up points plot
@@ -125,6 +125,8 @@ class getModisLST_1km():
         else:
             plt.scatter(x=longs, y=bound['max_lat'] - lats + bound['min_lat'], c='magenta')
         # show
+        plt.xlabel('Longitude')
+        plt.ylabel('Latitude')
         plt.show()
 
 
@@ -149,6 +151,8 @@ class getModisLST_1km():
         else:
             plt.scatter(x=longs, y=lats)
         # show
+        plt.xlabel('Longitude')
+        plt.ylabel('Latitude')
         plt.show()
 
 
