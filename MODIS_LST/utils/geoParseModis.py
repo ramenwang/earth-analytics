@@ -72,8 +72,10 @@ class getModisLST_1km():
         '''
         a function to plot modis QC
         '''
+        bound = self.getBound()
         plt.figure(figsize=(20,10))
-        im = plt.imshow(self.mask)
+        im = plt.imshow(self.mask,
+                        extent=[bound['min_lon'],bound['max_lon'],bound['max_lat'],bound['min_lat']])
         ep.colorbar(im)
         plt.show()
 
@@ -82,9 +84,11 @@ class getModisLST_1km():
         '''
         a function to plot LST data
         '''
+        bound = self.getBound()
         plt.figure(figsize=(20,10))
-        im = plt.imshow(self.toCelsius(self.data))
-        im_bar = plt.colorbar(im, shrink = 0.75)
+        im = plt.imshow(self.toCelsius(self.data),
+                        extent=[bound['min_lon'],bound['max_lon'],bound['max_lat'],bound['min_lat']])
+        im_bar = plt.colorbar(im, shrink = 0.25)
         im_bar.set_label('LST (Celsius)')
         plt.show()
 
@@ -95,11 +99,13 @@ class getModisLST_1km():
         :param zval (numeric array): specifies the z-value to be plot
                                      long with the spatial points
         '''
+        bound = self.getBound()
+        ext = [bound['min_lon'],bound['max_lon'],bound['max_lat'],bound['min_lat']]
         plt.figure(figsize=(20,10))
-
         # set up image plot
-        im = plt.imshow(self.toCelsius(self.data))
-        im_bar = plt.colorbar(im, shrink = 0.75)
+        im = plt.imshow(self.toCelsius(self.data),
+                        extent=ext)
+        im_bar = plt.colorbar(im, shrink = 0.25)
         # im_bar = ep.colorbar(im)
         # set up labels
         plt.xlabel('Columns')
@@ -107,17 +113,17 @@ class getModisLST_1km():
         im_bar.set_label('LST (Celsius)')
 
         # set up points plot
-        _, _, rows, cols = self.toMatrixCoor()
+        lats, longs, rows, cols = self.toMatrixCoor()
         if zval != None:
             zval = np.array(zval)
-            points = plt.scatter(x=cols, y=rows, c=zval,
+            points = plt.scatter(x=longs, y=bound['max_lat'] - lats + bound['min_lat'], c=zval,
                                  norm=colors.Normalize(vmin=zval.min(), vmax=zval.max()),
                                  cmap='coolwarm')
-            pts_bar = plt.colorbar(points, shrink = 0.75)
+            pts_bar = plt.colorbar(points, shrink = 0.25)
             if z_label != None:
                 pts_bar.set_label(z_label)
         else:
-            plt.scatter(x=cols, y=rows, c='magenta')
+            plt.scatter(x=longs, y=bound['max_lat'] - lats + bound['min_lat'], c='magenta')
         # show
         plt.show()
 
@@ -129,20 +135,19 @@ class getModisLST_1km():
                                      long with the spatial points
         '''
         plt.figure(figsize=(20,10))
-        plt.gca().invert_yaxis()
 
         # set up points plot
-        _, _, rows, cols = self.toMatrixCoor()
+        lats, longs, _, _ = self.toMatrixCoor()
         if zval != None:
             zval = np.array(zval)
-            points = plt.scatter(x=cols, y=rows, c=zval,
+            points = plt.scatter(x=longs, y=lats, c=zval,
                                  norm=colors.Normalize(vmin=zval.min(), vmax=zval.max()),
                                  cmap='coolwarm')
             pts_bar = plt.colorbar(points, shrink = 0.25)
             if z_label != None:
                 pts_bar.set_label(z_label)
         else:
-            plt.scatter(x=cols, y=rows)
+            plt.scatter(x=longs, y=lats)
         # show
         plt.show()
 
@@ -153,7 +158,7 @@ class getModisLST_1km():
         '''
 
         # get geoinformation
-        bound = self.modisParser.retBoundary()
+        bound = self.getBound()
         long_res = (bound['max_lon'] - bound['min_lon']) / self.data.shape[1] # col - x
         lat_res = (bound['max_lat'] - bound['min_lat']) / self.data.shape[0] # row - y
 
