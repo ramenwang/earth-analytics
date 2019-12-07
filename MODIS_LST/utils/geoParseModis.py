@@ -113,9 +113,12 @@ class getModisLST_1km():
         im_bar.set_label('LST (Celsius)')
 
         # set up points plot
-        lats, longs, rows, cols = self.toMatrixCoor()
-        if zval != None:
-            zval = np.array(zval)
+        lats, longs, rows, cols, _ = self.toMatrixCoor()
+
+        # trim zval
+        if zval != None: zval = self.trimZVal(zval = zval)
+
+        if any(zval != None):
             points = plt.scatter(x=longs, y=bound['max_lat'] - lats + bound['min_lat'], c=zval,
                                  norm=colors.Normalize(vmin=zval.min(), vmax=zval.max()),
                                  cmap='coolwarm')
@@ -139,8 +142,11 @@ class getModisLST_1km():
         plt.figure(figsize=(20,10))
 
         # set up points plot
-        lats, longs, _, _ = self.toMatrixCoor()
-        if zval != None:
+        lats, longs, _, _, _ = self.toMatrixCoor()
+
+        if zval != None: zval = self.trimZVal(zval = zval)
+
+        if any(zval != None):
             zval = np.array(zval)
             points = plt.scatter(x=longs, y=lats, c=zval,
                                  norm=colors.Normalize(vmin=zval.min(), vmax=zval.max()),
@@ -182,7 +188,7 @@ class getModisLST_1km():
         lats = self.lats[(outliers == False)]
         longs = self.longs[(outliers == False)]
 
-        return lats, longs, rows, cols
+        return lats, longs, rows, cols, outliers
 
 
     def toCelsius(self, modis_data):
@@ -193,6 +199,22 @@ class getModisLST_1km():
         modis_data[np.where(modis_data == 0)] = np.nan # set invalided value to nan
         modis_data = modis_data * 0.02 - 273.15 # convert to celsius
         return modis_data
+
+
+    def trimZVal(self, zval):
+        '''
+        a function to return z values which fall in the image boundary
+
+        :param zval (numeric list/array): z value must pair to lats and longs
+        '''
+        zval = np.array(zval)
+        _, _, _, _, outliers = self.toMatrixCoor()
+
+        if len(zval) != len(lats):
+            print('z value should have the same length as lats and longs')
+            return None
+
+        return zval[outliers == False]
 
 
     def getVal(self, dataType = 'qc_temperature'):
@@ -212,7 +234,7 @@ class getModisLST_1km():
         elif dataType == 'qc_mask':
             modis_data = self.mask
 
-        lats, longs, rows, cols = self.toMatrixCoor()
+        lats, longs, rows, cols, _ = self.toMatrixCoor()
 
         # return value from modis_data
         return np.array(list(zip(longs, lats, [modis_data[(row, col)] for row, col in zip(rows, cols)])))
