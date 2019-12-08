@@ -11,10 +11,10 @@ import numpy as np
 
 class getModisLST_1km():
 
-    def __init__(self, MODIS_file, prefix, lats, longs):
+    def __init__(self, MODIS_file, prefix, lats=[], longs=[]):
         '''
         getModisLST_1km object digests MODIS .hdf files and return parsed data
-        based on input spatial coordinates.
+        based on input spatial coordinates. Default lat and long pair is (0,0)
 
         :param MODIS_file (str): the path where modis .hdf saves
         :param prefix (str): specifies the temperature to be extracted, can be either "night" or "day"
@@ -22,6 +22,8 @@ class getModisLST_1km():
         '''
 
         self.MODIS_file = MODIS_file
+        if lats == []: lats = [0]
+        if longs == []: longs = [0]
         self.lats = np.array(lats)
         self.longs = np.array(longs)
         self.modisParser = parsemodis.parseModis(MODIS_file)
@@ -79,7 +81,7 @@ class getModisLST_1km():
         ep.colorbar(im)
         plt.xlabel('Longitude')
         plt.ylabel('Latitude')
-        plt.show()
+        print(plt.show())
 
 
     def plotData(self):
@@ -94,10 +96,10 @@ class getModisLST_1km():
         im_bar.set_label('LST (Celsius)')
         plt.xlabel('Longitude')
         plt.ylabel('Latitude')
-        plt.show()
+        print(plt.show())
 
 
-    def plotOverlap(self, zval=None, z_label=None):
+    def plotOverlap(self, zval=None, z_label=[]):
         '''
         a function to plot LST data with spatial points on top
         :param zval (numeric array): specifies the z-value to be plot
@@ -116,9 +118,9 @@ class getModisLST_1km():
         lats, longs, rows, cols, _ = self.toMatrixCoor()
 
         # trim zval
-        if zval != None: zval = self.trimZVal(zval = zval)
+        if zval != []: zval = self.trimZVal(zval = zval)
 
-        if any(zval != None):
+        if zval != []:
             points = plt.scatter(x=longs, y=bound['max_lat'] - lats + bound['min_lat'], c=zval,
                                  norm=colors.Normalize(vmin=zval.min(), vmax=zval.max()),
                                  cmap='coolwarm')
@@ -130,10 +132,10 @@ class getModisLST_1km():
         # show
         plt.xlabel('Longitude')
         plt.ylabel('Latitude')
-        plt.show()
+        print(plt.show())
 
 
-    def plotPoints(self, zval=None, z_label=None):
+    def plotPoints(self, zval=[], z_label=None):
         '''
         a function to plot LST data with spatial points on top
         :param zval (numeric array): specifies the z-value to be plot
@@ -144,9 +146,9 @@ class getModisLST_1km():
         # set up points plot
         lats, longs, _, _, _ = self.toMatrixCoor()
 
-        if zval != None: zval = self.trimZVal(zval = zval)
+        if zval != []: zval = self.trimZVal(zval = zval)
 
-        if any(zval != None):
+        if zval != []:
             zval = np.array(zval)
             points = plt.scatter(x=longs, y=lats, c=zval,
                                  norm=colors.Normalize(vmin=zval.min(), vmax=zval.max()),
@@ -159,7 +161,7 @@ class getModisLST_1km():
         # show
         plt.xlabel('Longitude')
         plt.ylabel('Latitude')
-        plt.show()
+        print(plt.show())
 
 
     def toMatrixCoor(self):
@@ -201,18 +203,19 @@ class getModisLST_1km():
         return modis_data
 
 
-    def trimZVal(self, zval):
+    def trimZVal(self, zval=[]):
         '''
         a function to return z values which fall in the image boundary
 
         :param zval (numeric list/array): z value must pair to lats and longs
         '''
         zval = np.array(zval)
+        lats = self.lats
         _, _, _, _, outliers = self.toMatrixCoor()
 
         if len(zval) != len(lats):
             print('z value should have the same length as lats and longs')
-            return None
+            return []
 
         return zval[outliers == False]
 
