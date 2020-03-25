@@ -11,4 +11,5 @@
   2. Feature engineering (meterological index computation)
   3. Modeling
   
+  ![workflow_img](https://github.com/ramenwang/earth-analytics/edit/master/2020_corn_yield_prediction/workflow.png)
   
