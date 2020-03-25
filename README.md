@@ -28,3 +28,8 @@ glob, requests, gdal (brew install gdal (on mac), which does not include hdf4 dr
 ## [General tools for RS image processing](https://github.com/ramenwang/earth-analytics/tree/master/general_tools)
 
 This folder are hand crafted tools for the convinience of processing RS imagery data in python environment. It requires some python packages to be installed: rasterio, gdal, earthpy and matplotlib
+
+
+## [2020 corn yield estimation](https://github.com/ramenwang/earth-analytics/tree/master/2020_corn_yield_prediction)
+
+A project to predict 2020 national corn yield based on FIPS-level weather data from 2010.1 to 2020.3
