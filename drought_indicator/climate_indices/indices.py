@@ -14,13 +14,6 @@ class Distribution(Enum):
     gamma = 'gamma'
 
 #-------------------------------------------------------------------------------------------------------------------------------------------
-# set up a basic, global _logger
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s %(levelname)s %(message)s',
-                    datefmt='%Y-%m-%d  %H:%M:%S')
-_logger = logging.getLogger(__name__)
-
-#-------------------------------------------------------------------------------------------------------------------------------------------
 # valid upper and lower bounds for indices that are fitted/transformed to a distribution (SPI and SPEI)
 _FITTED_INDEX_VALID_MIN = -3.09
 _FITTED_INDEX_VALID_MAX = 3.09
