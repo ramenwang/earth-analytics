@@ -20,3 +20,8 @@ A collection of drought indicators across different domains, including meteorolo
 ## [2020 corn yield estimation](https://github.com/ramenwang/earth-analytics/tree/master/2020_corn_yield_prediction)
 
 A project to predict 2020 national corn yield based on FIPS-level weather data from 2010.1 to 2020.3
+
+
+## [Spatial data scientist knowledge and resouces](https://github.com/ramenwang/data-science-hub/tree/master/ds_knowledge)
+
+A summarization of knowledge and experiences for both general data scientist and data scientist with expertise in spatial analysis and environmental studies.
