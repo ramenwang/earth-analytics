@@ -22,3 +22,5 @@ Some of the scripts are modifications from pyModis and pyMasker, the copyright s
 
 ## Get hands on
 Please check the demo [here](https://github.com/ramenwang/earth-analytics/blob/master/MODIS_LST/MODIS_processing_example.ipynb)
+
+![demo_img](https://github.com/ramenwang/earth-analytics/blob/master/MODIS_LST/pics/modis_demo.png)
