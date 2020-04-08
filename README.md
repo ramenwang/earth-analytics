@@ -5,7 +5,7 @@
 
 ## [MODIS LST - python scripts for downloading, preprocessing, and value extraction](https://github.com/ramenwang/earth-analytics/tree/master/MODIS_LST)
 
-Some of the scripts are modifications from pyModis and pyMasker, the copyright should belong to original authors. 
+Built on top of [pyModis](http://www.pymodis.org/) and [pyMasker](https://pypi.org/project/pymasker/), most of the credentials should go to the original authors. 
 
 ## [General tools for RS image processing](https://github.com/ramenwang/earth-analytics/tree/master/general_tools)
 
@@ -13,6 +13,8 @@ This folder are hand crafted tools for the convinience of processing RS imagery 
 
 
 ## [Python tools for computing drought indicator](https://github.com/ramenwang/earth-analytics/tree/master/drought_indicator)
+
+A collection of drought indicators across different domains, including meteorology, remote sensing, GIS, agriculture, etc.
 
 
 ## [2020 corn yield estimation](https://github.com/ramenwang/earth-analytics/tree/master/2020_corn_yield_prediction)
