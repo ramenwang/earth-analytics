@@ -97,7 +97,7 @@ def feature_extractor(x, n_layers, filter_size, n_filters, min_filters,
     :return: a stack of skip connected tensors
     :rtype: tensors
     '''
-    concat_list = []
+    concat_list = [x]
     n_filter_list = []
     for i in range(n_layers):
         # perform gamma decay
