@@ -1,9 +1,13 @@
 # RS Super-Resolution
 * The model upsamples the images from rougher spatial resolution to finer. 
 ## Intuition
-The model consists of 
+The model consists of three main parts: feature extractor, feature selector, image reconstructor. The model input is the low-resolutionn image, and target is the residual between true high-resolution image and bicubic upsampled image. In the forward pass, <br>
+1. the input image is first digested by feature extractor that creates a stack of feature maps at different spatial scales <br>
+2. the feature selector working on feature stack to select responsible feature maps <br>
+3. the selected feature maps are reassembled to form the target image (residual image)
+![cnn architecture](https://github.com/ramenwang/earth-analytics/blob/master/RSSupperRes/pics/cnn_arch.png)
 ## Current available models
 1. 2x resolution upsampling consists of:
-> a 9-layer feature extractor with number of filters [48, 47, 46, 44, 40, 34, 25, 16, 12]
-> a 3-path inception feature selector with filter size [(1,1), (3,3), (5,5)]
-> a 1-layer image reconstructor with number of filters 24
+> a 9-layer feature extractor with number of filters [128-108-84-65-54-49-48-48-48]
+> a 3-path inception feature selector with number of filters [64-32-32]
+> a 1-layer image reconstructor with number of filters [24]
