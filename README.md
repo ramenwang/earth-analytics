@@ -3,6 +3,8 @@
 -- building tools for environmental studies <br>
 -- working on interesting enviornmental related problem <br>
 
+## [RSSuperRes - Super resolution model for upsampling RS imagery](https://github.com/ramenwang/earth-analytics/tree/master/RSSuperRes)
+
 ## [MODIS LST - python scripts for downloading, preprocessing, and value extraction](https://github.com/ramenwang/earth-analytics/tree/master/MODIS_LST)
 
 Built on top of [pyModis](http://www.pymodis.org/) and [pyMasker](https://pypi.org/project/pymasker/), most of the credentials should go to the original authors. 
