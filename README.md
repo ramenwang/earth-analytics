@@ -3,7 +3,9 @@
 -- building tools for environmental studies <br>
 -- working on interesting enviornmental related problem <br>
 
-## [RSSuperRes - Super resolution model for upsampling RS imagery](https://github.com/ramenwang/earth-analytics/tree/master/RSSuperRes)
+## [RSSuperRes - Super resolution model for upsampling RS imagery](https://github.com/ramenwang/earth-analytics/tree/master/RSSupperRes)
+
+An application of upsampling RS imagery based on deep learning CNN. The script is writen in python mainly based on Keras library, and the model is trained on Google Colab.
 
 ## [MODIS LST - python scripts for downloading, preprocessing, and value extraction](https://github.com/ramenwang/earth-analytics/tree/master/MODIS_LST)
 
