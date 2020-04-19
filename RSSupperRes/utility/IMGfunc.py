@@ -152,3 +152,21 @@ class DataGenerator(Sequence):
             y[i,] = pixel_trimmer(tmp_img_y)/255. - pixel_trimmer(tmp_img_x)/255.
 
         return y
+
+
+def runRSSuper(model, img_file, scale):
+    '''implement super-resolution model on single image
+    '''
+    img = imageio.imread(img_file)
+    if len(img.shape) == 2:
+        img = img.reshape((*img.shape, 1))
+
+    # get image
+    tmp_x = pixel_trimmer(img) / 255.
+    tmp_x = tmp_x.reshape((1, *tmp_x.shape))
+    # get upsampled image
+    upsamp_x = img_rescale(img, scale, 'bicubic')
+    upsamp_x = pixel_trimmer(upsamp_x)/255.
+    # predict
+    output_img = model.predict(tmp_x, verbose=0).reshape(*upsamp_x.shape)
+    return pixel_trimmer((upsamp_x + output_img) * 255.)
