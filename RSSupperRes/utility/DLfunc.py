@@ -1,7 +1,7 @@
 import numpy as np
 import tensorflow as tf
 import keras as K
-from keras.layers import Input, Concatenate, Conv2D, LeakyReLU, Dense, Lambda
+from keras.layers import Input, Concatenate, Conv2D, ReLU, Dense, Lambda
 from keras.layers import BatchNormalization, Dropout
 from keras.optimizers import Adam
 from keras.models import Model
@@ -9,7 +9,7 @@ from keras.models import Model
 
 def conv2d(x, num_filters, filter_size, stride=(1,1), padding='same', name="",
            act=True, batchnorm=True, dropout_rate=None):
-    ''' conv2d with optional batchnorm, leakyReLU activation, or dropout
+    ''' conv2d with optional batchnorm, ReLU activation, or dropout
     :param x: input tensor
     :param num_filters: number of filters
     :param filter_size: filter size
@@ -29,7 +29,7 @@ def conv2d(x, num_filters, filter_size, stride=(1,1), padding='same', name="",
         x = BatchNormalization()(x)
     # activation
     if (act):
-        x = LeakyReLU()(x)
+        x = ReLU()(x)
     # random dropout
     if (dropout_rate != None):
         x = Dropout(rate=dropout_rate)(x)
@@ -182,5 +182,10 @@ def RSSuperRes(input_dim, scale, n_layers, n_filters, min_filters,
                      dropout_rate=dropout_rate, act=False, name='output')
 
     model = Model(inputs=inputs, outputs=outputs)
-    model.compile(optimizer='adam', loss=img_loss(6+scale))
-    return model, n_filter_list
+    model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mse'])
+    model_name = str(scale) + "x." + str(n_layers) + 'lyr-FE-(' + str(n_layers) + '-' + \
+                 '-'.join([str(i) for i in n_filter_list]) + \
+                 ').3p-INC-(' + str(nin_filter) + '-' + str(nin_filter // 2) + ').' + \
+                 str(n_reconstructors) + 'lyr-RCN-(' + str(num_recon_filters) + ').h5'
+
+    return model, model_name
