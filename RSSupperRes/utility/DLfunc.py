@@ -80,7 +80,7 @@ def pixel_shuffler(x, scale, output_filters, filter_size):
     # using depth_to_space to resampling the image pixel from depth
     Subpixel_layer = Lambda(lambda x: tf.nn.depth_to_space(x,scale))
     ps = Subpixel_layer(inputs=ps)
-    ps = LeakyReLU()(ps)
+    ps = ReLU()(ps)
     return ps
 
 
@@ -170,8 +170,6 @@ def RSSuperRes(input_dim, scale, n_layers, n_filters, min_filters,
     inputs = Input(shape=input_dim)
     x, n_filter_list = feature_extractor(inputs, n_layers, (3,3), n_filters,
                                          min_filters, filter_decay_gamma, dropout_rate)
-    print("number of filters used in different layers are:")
-    print(n_filter_list)
     x = inception_module(x=x, nin_filter=nin_filter, dropout_rate=dropout_rate, name='inc')
     x = pixel_shuffler(x=x, scale=scale, output_filters=shuffler_output_filters,
                        filter_size=shuffler_filter_size)
@@ -183,7 +181,7 @@ def RSSuperRes(input_dim, scale, n_layers, n_filters, min_filters,
 
     model = Model(inputs=inputs, outputs=outputs)
     model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mse'])
-    model_name = str(scale) + "x." + str(n_layers) + 'lyr-FE-(' + str(n_layers) + '-' + \
+    model_name = str(scale) + "x." + str(n_layers) + 'lyr-FE-(' + str(n_filters) + '-' + \
                  '-'.join([str(i) for i in n_filter_list]) + \
                  ').3p-INC-(' + str(nin_filter) + '-' + str(nin_filter // 2) + ').' + \
                  str(n_reconstructors) + 'lyr-RCN-(' + str(num_recon_filters) + ').h5'
