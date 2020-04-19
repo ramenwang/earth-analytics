@@ -76,11 +76,37 @@ def img_rescale(image, scale, resampling_method):
     return image
 
 
+def img_rotation(image, rot_angle):
+    ''' rotate img based on given angle, including [0, 90, 180, 270]
+    :param image: input image [rows, cols, channels]
+    :param rot_angle: angle for rotation
+    :return: a rotated image
+    :rtype: np.array
+    '''
+    width, height = image.shape[1], image.shape[0]
+
+    if len(image.shape) == 3 and image.shape[2] == 3:
+        image = Image.fromarray(image, "RGB")
+        image = image.rotate(rot_angle)
+        image = np.asarray(image)
+    elif len(image.shape) == 3 and image.shape[2] == 4:
+        # the image may has an alpha channel
+        image = Image.fromarray(image, "RGB")
+        image = image.rotate(rot_angle)
+        image = np.asarray(image)
+    else:
+        image = Image.fromarray(image.reshape(height, width))
+        image = image.rotate(rot_angle)
+        image = np.asarray(image)
+        image = image.reshape(width, height, 1)
+
+    return image
+
 class DataGenerator(Sequence):
     """ Generates data for RSSuperRes
     """
     def __init__(self, img_list, x_dir, y_dir, input_dim, scale, n_channels,
-                 batch_size=32, to_fit=True, shuffle=True):
+                 batch_size=32, to_fit=True, shuffle=True, rotation=True):
         """ Initialization
         :param img_list: list of image files to use in the generator
         :param x_dir: path to input images location
@@ -102,6 +128,7 @@ class DataGenerator(Sequence):
         self.to_fit = to_fit
         self.batch_size = batch_size
         self.shuffle = shuffle
+        self.rotation = rotation
         self.on_epoch_end()
 
     def __len__(self):
@@ -113,9 +140,9 @@ class DataGenerator(Sequence):
         img_files = [self.img_list[k] for k in indexes]
 
         # Generate data
-        X = self._generate_X(img_files)
+        X = self._generate_X(img_files, indexes)
         if self.to_fit:
-            y = self._generate_y(img_files)
+            y = self._generate_y(img_files, indexes)
             return X, y
         else:
             return X
@@ -124,32 +151,45 @@ class DataGenerator(Sequence):
         """Updates indexes after each epoch
         """
         self.indexes = np.arange(len(self.img_list))
-        if self.shuffle == True:
+        if self.shuffle:
             np.random.shuffle(self.indexes)
+        if self.rotation:
+            self.rot_ag = np.random.choice([0, 90, 180, 270], size=len(self.img_list))
 
-    def _generate_X(self, img_files):
+    def _generate_X(self, img_files, indexes):
         """Generates data containing batch_size images
         :param img_files: list of low resolution images
         :return: batch of images
         """
         X = np.empty((self.batch_size, *self.x_dim, self.n_channels))
+        if self.rotation:
+            rot_ags = [self.rot_ag[k] for k in indexes]
+
         for i, iFile in enumerate(img_files):
-             tmp_img = imageio.imread(self.x_dir + "/" + iFile).reshape((*self.x_dim, self.n_channels))
-             X[i,] = pixel_trimmer(tmp_img) / 255
+            tmp_img = imageio.imread(self.x_dir + "/" + iFile).reshape((*self.x_dim, self.n_channels))
+            if self.rotation: # rotation
+                tmp_img = img_rotation(tmp_img, rot_ags[i])
+            X[i,] = pixel_trimmer(tmp_img) / 255
 
         return X
 
-    def _generate_y(self, img_files):
+    def _generate_y(self, img_files, indexes):
         """Generates data containing batch_size residual image
         :param img_files: list of label ids to load
         :return: batch of residual images
         """
         y = np.empty((self.batch_size, *self.y_dim, self.n_channels))
+        if self.rotation:
+            rot_ags = [self.rot_ag[k] for k in indexes]
+
         for i, iFile in enumerate(img_files):
             tmp_img_x = imageio.imread(self.x_dir + "/" + iFile).reshape((*self.x_dim, self.n_channels))
             tmp_img_y = imageio.imread(self.y_dir + "/" + iFile).reshape((*self.y_dim, self.n_channels))
             tmp_img_x = img_rescale(tmp_img_x, self.scale, 'bicubic')
-            y[i,] = pixel_trimmer(tmp_img_y)/255. - pixel_trimmer(tmp_img_x)/255.
+            tmp_y = pixel_trimmer(tmp_img_y)/255. - pixel_trimmer(tmp_img_x)/255.
+            if self.rotation: # rotation
+                tmp_y = img_rotation(tmp_y, rot_ags[i])
+            y[i,] = tmp_y
 
         return y
 
