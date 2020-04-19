@@ -109,7 +109,7 @@ class DataGenerator(Sequence):
 
     def __getitem__(self, index):
         # Generate indexes of the batch
-        indexes = self.indexes[index * self.batch_size:(index + 1) * self.batch_size]
+        indexes = self.indexes[(index * self.batch_size):((index + 1) * self.batch_size)]
         img_files = [self.img_list[k] for k in indexes]
 
         # Generate data
@@ -149,6 +149,6 @@ class DataGenerator(Sequence):
             tmp_img_x = imageio.imread(self.x_dir + "/" + iFile).reshape((*self.x_dim, self.n_channels))
             tmp_img_y = imageio.imread(self.y_dir + "/" + iFile).reshape((*self.y_dim, self.n_channels))
             tmp_img_x = img_rescale(tmp_img_x, self.scale, 'bicubic')
-            y[i,] = pixel_trimmer(tmp_img_y) - pixel_trimmer(tmp_img_x)
+            y[i,] = pixel_trimmer(tmp_img_y)/255. - pixel_trimmer(tmp_img_x)/255.
 
         return y

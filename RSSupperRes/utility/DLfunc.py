@@ -140,8 +140,8 @@ def img_loss(border_size):
         diff = K.layers.subtract([img_true, img_pred])
         if border_size>0:
             # trim image into wanted border_size
-            diff = diff[border_size: -border_size, border_size: -border_size]
-        return K.backend.mean(K.backend.square(diff), axis=-1)
+            diff = diff[border_size: -border_size, border_size: -border_size, -1]
+        return K.backend.mean(K.backend.square(diff))
 
     return loss
 
